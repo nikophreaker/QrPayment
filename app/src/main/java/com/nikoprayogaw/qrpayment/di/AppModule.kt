@@ -15,4 +15,6 @@ interface AppModule {
     @Singleton
     @Binds
     fun bindAppNavigator(appNavigatorImpl: AppNavigatorImpl): AppNavigator
+
+
 }

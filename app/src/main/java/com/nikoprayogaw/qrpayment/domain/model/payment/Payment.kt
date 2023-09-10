@@ -18,12 +18,12 @@ import java.util.Date
 )
 data class Payment(
 
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    var id: Int,
+    var id: Int = 0,
 
-    @ColumnInfo(name = "transaksiId")
-    var transaksiId: String,
+    @ColumnInfo(name = "transactionId")
+    var transactionId: String,
 
     @ColumnInfo(name = "userId", index = true)
     var userId: Int,

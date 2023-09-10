@@ -9,7 +9,7 @@ interface UserDao {
     suspend fun addUser(user: User)
 
     @Query("SELECT * FROM users WHERE accountNumber = :accountNumber")
-    fun findUserByAccountNumber(accountNumber: String): User
+    fun findUserByAccountNumber(accountNumber: Long): User
 
     @Query("SELECT * FROM users")
     fun getAllUsers(): List<User>

@@ -73,6 +73,7 @@ fun MainScreen(
                 }
             }
         ) {
+            it.calculateBottomPadding()
             NavHost(
                 navController = navController,
                 startDestination = Destination.HomeScreen
@@ -81,7 +82,7 @@ fun MainScreen(
                     HomeScreen()
                 }
                 composable(destination = Destination.MutasiScreen) {
-                    MutasiScreen()
+                    MutasiScreen(navController)
                 }
                 composable(destination = Destination.ChartScreen) {
                     ChartScreen()

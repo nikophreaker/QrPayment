@@ -8,9 +8,9 @@ import kotlinx.parcelize.Parcelize
 @Entity(tableName = "users")
 data class User(
 
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    var id: Int,
+    var id: Int = 0,
 
     @ColumnInfo(name = "accountNumber")
     var accountNumber: Long,
@@ -22,8 +22,10 @@ data class User(
     var email: String,
 
     @ColumnInfo(name = "phone")
-    var phone: Long,
+    var phone: String,
 
     @ColumnInfo(name = "balance")
     var balance: Long
-) : Parcelable
+) : Parcelable {
+
+}

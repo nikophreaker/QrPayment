@@ -34,7 +34,7 @@ class UserViewModel @Inject constructor(
         userRepository.updateUserDetails(user)
     }
 
-    fun findUserById(accountNumber: String) {
+    fun findUserById(accountNumber: Long) {
         userRepository.findUserByAccountNumber(accountNumber)
     }
 

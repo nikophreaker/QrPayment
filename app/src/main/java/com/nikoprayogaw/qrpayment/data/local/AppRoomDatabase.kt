@@ -1,17 +1,32 @@
 package com.nikoprayogaw.qrpayment.data.local
 
 import android.content.Context
-import androidx.room.*
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.nikoprayogaw.qrpayment.domain.model.payment.Payment
 import com.nikoprayogaw.qrpayment.domain.model.payment.PaymentDao
 import com.nikoprayogaw.qrpayment.domain.model.user.User
 import com.nikoprayogaw.qrpayment.domain.model.user.UserDao
 
-@Database(entities = [(User::class), (Payment::class)], version = 1, exportSchema = false)
+
+@Database(entities = [(User::class), (Payment::class)], version = 2, exportSchema = false)
 abstract class AppRoomDatabase : RoomDatabase() {
 
     abstract fun userDao(): UserDao
     abstract fun paymentDao(): PaymentDao
+
+    internal class CallBack : Callback() {
+        override fun onCreate(db: SupportSQLiteDatabase) {
+            super.onCreate(db)
+            db.beginTransaction()
+            db.execSQL(
+                "INSERT INTO users ('accountNumber','userName','email','phone','balance') VALUES (123456789,\"Niko Prayoga\", \"nikx449@gmail.com\", \"085891225824\",4600000)"
+            )
+            db.endTransaction()
+        }
+    }
 
     companion object {
         /*The value of a volatile variable will never be cached, and all writes and reads will be done to and from the main memory.
@@ -29,7 +44,7 @@ abstract class AppRoomDatabase : RoomDatabase() {
                     instance = Room.databaseBuilder(
                         context.applicationContext,
                         AppRoomDatabase::class.java,
-                        "appDB"
+                        "mbenking_database"
                     ).fallbackToDestructiveMigration()
                         .build()
 

@@ -3,8 +3,9 @@ package com.nikoprayogaw.qrpayment.domain.repository.user
 import androidx.lifecycle.MutableLiveData
 import com.nikoprayogaw.qrpayment.domain.model.user.*
 import kotlinx.coroutines.*
+import javax.inject.Inject
 
-class UserRepository(private val userDao: UserDao) {
+class UserRepository @Inject constructor(private val userDao: UserDao) {
 
     val allUsers = MutableLiveData<List<User>>()
     val foundUser = MutableLiveData<User>()
@@ -34,7 +35,7 @@ class UserRepository(private val userDao: UserDao) {
         }
     }
 
-    fun findUserByAccountNumber(accountNumber: String) {
+    fun findUserByAccountNumber(accountNumber: Long) {
         coroutineScope.launch(Dispatchers.IO) {
             foundUser.postValue(userDao.findUserByAccountNumber(accountNumber))
         }

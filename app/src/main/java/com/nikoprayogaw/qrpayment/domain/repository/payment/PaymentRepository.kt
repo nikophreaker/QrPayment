@@ -2,9 +2,12 @@ package com.nikoprayogaw.qrpayment.domain.repository.payment
 
 import androidx.lifecycle.MutableLiveData
 import com.nikoprayogaw.qrpayment.domain.model.payment.*
+import dagger.Module
+import dagger.hilt.InstallIn
 import kotlinx.coroutines.*
+import javax.inject.Inject
 
-class PaymentRepository(private val paymentDao: PaymentDao) {
+class PaymentRepository @Inject constructor(private val paymentDao: PaymentDao) {
 
     val allPayment = MutableLiveData<List<Payment>>()
     val foundPayment = MutableLiveData<Payment>()

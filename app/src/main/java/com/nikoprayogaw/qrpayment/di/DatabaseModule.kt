@@ -14,7 +14,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-private object DatabaseModule {
+object DatabaseModule {
 
     @Provides
     fun provideUserDao(appDatabase: AppRoomDatabase): UserDao {
@@ -33,7 +33,11 @@ private object DatabaseModule {
             context.applicationContext,
             AppRoomDatabase::class.java,
             "appDB"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .addCallback(AppRoomDatabase.CallBack())
+            .allowMainThreadQueries()
+            .build()
     }
 
 }

@@ -2,16 +2,16 @@ buildscript {
     ext {
         //Core
         compose_ui_version = '1.5.1'
-        core_ktx_version = '1.10.1'
+        core_ktx_version = '1.12.0'
         inject_version = '1'
         lifecycle_ktx_version = '2.3.1'
-        androidx_lifecycle_version = '2.5.1'
+        androidx_lifecycle_version = '2.6.2'
         nav_version = '2.5.3'
         activity_compose_version = '1.7.2'
-        navigation_compose_version = '2.7.1'
+        navigation_compose_version = '2.7.2'
 
         //Dagger hilt
-        hilt_version = '2.44'
+        hilt_version = '2.48'
         hilt_compiler_version = '1.0.0'
 
         // Tests
@@ -34,8 +34,9 @@ buildscript {
     }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    id 'com.android.application' version '7.3.1' apply false
-    id 'com.android.library' version '7.3.1' apply false
-    id 'org.jetbrains.kotlin.android' version '1.9.0' apply false
-    id 'com.google.dagger.hilt.android' version '2.44' apply false
+    id 'com.android.application' version '8.1.1' apply false
+    id 'com.android.library' version '8.1.1' apply false
+    id 'org.jetbrains.kotlin.android' version '1.9.10' apply false
+    id 'com.google.dagger.hilt.android' version '2.48' apply false
+    id 'com.google.devtools.ksp' version '1.9.10-1.0.13' apply false
 }
