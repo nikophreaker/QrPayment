@@ -34,9 +34,6 @@ object DatabaseModule {
             AppRoomDatabase::class.java,
             "appDB"
         )
-            .fallbackToDestructiveMigration()
-            .addCallback(AppRoomDatabase.CallBack())
-            .allowMainThreadQueries()
             .build()
     }
 

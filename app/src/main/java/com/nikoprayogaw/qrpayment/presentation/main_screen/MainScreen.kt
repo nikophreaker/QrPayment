@@ -50,7 +50,7 @@ fun MainScreen(
         navigationChannel = mainViewModel.navigationChannel,
         navHostController = navController
     )
-    QrPaymentTheme {
+//    QrPaymentTheme {
         Scaffold(
             bottomBar = { BottomNavigationBar(screens = screens, navController = navController) },
             modifier = Modifier.fillMaxSize(),
@@ -91,7 +91,7 @@ fun MainScreen(
                 }
             }
         }
-    }
+//    }
 }
 
 

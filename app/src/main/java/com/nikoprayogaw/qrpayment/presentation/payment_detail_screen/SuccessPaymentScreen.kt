@@ -1,5 +1,7 @@
 package com.nikoprayogaw.qrpayment.presentation.payment_detail_screen
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.widget.Toast
@@ -27,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -44,18 +47,16 @@ import com.nikoprayogaw.qrpayment.presentation.util.GetDateNow
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun PaymentDetailScreen(intent: Intent,
-                        lifeCycleOwner: LifecycleOwner,
-                        navController: NavHostController,
-                        mutasiViewModel: MutasiViewModel = hiltViewModel(),
-                        paymentDetailViewModel: PaymentDetailViewModel = hiltViewModel()
+fun SuccessPaymentScreen(
+    intent: Intent
 ) {
     val bank = intent.getStringExtra("bank")
-    val transactionId = intent.getLongExtra("transactionId",0)
+    val transactionId = intent.getLongExtra("transactionId", 0)
     val merchantName = intent.getStringExtra("merchantName")
     val amount = intent.getLongExtra("amount", 0)
     val check = intent.getBooleanExtra("check", false)
     val success = MutableLiveData<Boolean>()
+    val activity = (LocalContext.current as? Activity)
 
     Card(
         modifier = Modifier
@@ -92,6 +93,11 @@ fun PaymentDetailScreen(intent: Intent,
                 Spacer(modifier = Modifier.width(20.dp))
                 Column {
                     Text(
+                    text = "Pembayaran Berhasil",
+                    fontSize = 24.sp,
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
                         text = "ID Transaksi: $transactionId",
                         fontSize = 18.sp,
                     )
@@ -114,36 +120,12 @@ fun PaymentDetailScreen(intent: Intent,
             }
         }
     }
-
-    if (!check) {
-        Button(
-            onClick = {
-                try {
-                    mutasiViewModel.addPayment(
-                        Payment(
-                            userId = 1,
-                            transactionId = transactionId.toString(),
-                            bankName = bank.toString(),
-                            merchantName = merchantName.toString(),
-                            amount = amount,
-                            date = GetDateNow()
-                        )
-                    )
-                    success.value = true
-                } catch (err: Exception) {
-                    success.value = false
-                    Toast.makeText(navController.context,"Pembayaran Gagal",Toast.LENGTH_SHORT).show()
-
-                }
-            }
-        ) {
-            Text(text = "Bayar")
+    Button(
+        onClick = {
+            activity?.finish()
         }
+    ) {
+        Text(text = "OK")
     }
 
-    success.observe(lifeCycleOwner) {
-        if (it) {
-            paymentDetailViewModel.onNavigateToSuccessScreen()
-        }
-    }
 }

@@ -40,6 +40,26 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <activity
+            android:name=".presentation.payment_detail_screen.PaymentDetailActivity"
+            android:parentActivityName=".presentation.scan_qr_screen.ScanQrActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.QrPayment">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".presentation.promo_screen.PromoDetailActivity"
+            android:parentActivityName=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.QrPayment">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
     </application>
 
 </manifest>

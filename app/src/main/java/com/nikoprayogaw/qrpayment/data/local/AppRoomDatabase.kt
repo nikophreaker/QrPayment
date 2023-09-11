@@ -17,17 +17,6 @@ abstract class AppRoomDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun paymentDao(): PaymentDao
 
-    internal class CallBack : Callback() {
-        override fun onCreate(db: SupportSQLiteDatabase) {
-            super.onCreate(db)
-            db.beginTransaction()
-            db.execSQL(
-                "INSERT INTO users ('accountNumber','userName','email','phone','balance') VALUES (123456789,\"Niko Prayoga\", \"nikx449@gmail.com\", \"085891225824\",4600000)"
-            )
-            db.endTransaction()
-        }
-    }
-
     companion object {
         /*The value of a volatile variable will never be cached, and all writes and reads will be done to and from the main memory.
         This helps make sure the value of INSTANCE is always up-to-date and the same for all execution threads.

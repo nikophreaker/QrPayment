@@ -1,4 +1,4 @@
-package com.nikoprayogaw.qrpayment.presentation.payment_detail_screen
+package com.nikoprayogaw.qrpayment.presentation.promo_screen
 
 import android.Manifest
 import android.os.Build
@@ -23,35 +23,18 @@ import com.nikoprayogaw.qrpayment.presentation.util.NavHost
 import com.nikoprayogaw.qrpayment.presentation.util.composable
 import com.nikoprayogaw.qrpayment.ui.theme.QrPaymentTheme
 
-@ExperimentalPermissionsApi
-class PaymentDetailActivity : ComponentActivity() {
+class PromoDetailActivity : ComponentActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val navController = rememberNavController()
             Surface(color = MaterialTheme.colors.background) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Bottom
                 ) {
                     Spacer(modifier = Modifier.height(10.dp))
-                    NavHost(
-                        navController = navController,
-                        startDestination = Destination.PaymentScreen
-                    ) {
-                        composable(destination = Destination.PaymentScreen) {
-                            PaymentDetailScreen(
-                                intent,
-                                lifeCycleOwner = this@PaymentDetailActivity,
-                                navController
-                            )
-                        }
-                        composable(destination = Destination.SuccesPaymentScreen) {
-                            SuccessPaymentScreen(intent)
-                        }
-                    }
                     Spacer(modifier = Modifier.height(10.dp))
                 }
             }

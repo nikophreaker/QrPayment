@@ -17,4 +17,8 @@ class PaymentDetailViewModel @Inject constructor(
         appNavigator.tryNavigateBack(route = Destination.HomeScreen())
     }
 
+    fun onNavigateToSuccessScreen() {
+        appNavigator.tryNavigateTo(route = Destination.SuccesPaymentScreen(), isSingleTop = true)
+    }
+
 }

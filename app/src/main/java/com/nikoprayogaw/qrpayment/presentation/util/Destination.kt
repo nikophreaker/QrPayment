@@ -22,6 +22,8 @@ sealed class Destination(protected val route: String, vararg params: String) {
     object ChartScreen : NoArgumentsDestination("chart")
 
     object UserScreen : NoArgumentsDestination("user")
+    object PaymentScreen : NoArgumentsDestination("payment")
+    object SuccesPaymentScreen : NoArgumentsDestination("succes_payment")
 
     object UserDetailsScreen : Destination("user_details", "firstName", "lastName") {
         const val FIST_NAME_KEY = "firstName"
