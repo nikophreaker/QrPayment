@@ -1,20 +1,18 @@
 package com.nikoprayogaw.qrpayment.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 
-private val DarkColorPalette = darkColors(
-    primary = Purple200,
-    primaryVariant = Purple700,
+private val DarkColorPalette = darkColorScheme(
+    surface = Purple200,
+    surfaceVariant = Purple700,
     secondary = Teal200
 )
 
-private val LightColorPalette = lightColors(
-    primary = Purple500,
-    primaryVariant = Purple700,
+private val LightColorPalette = lightColorScheme(
+    surface = Purple500,
+    surfaceVariant = Purple700,
     secondary = Teal200
 
     /* Other default colors to override
@@ -30,13 +28,14 @@ private val LightColorPalette = lightColors(
 @Composable
 fun QrPaymentTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colors = if (darkTheme) {
-        DarkColorPalette
+//        DarkColorPalette
+        LightColorPalette
     } else {
         LightColorPalette
     }
 
     MaterialTheme(
-        colors = colors,
+        colorScheme = colors,
         typography = Typography,
         shapes = Shapes,
         content = content

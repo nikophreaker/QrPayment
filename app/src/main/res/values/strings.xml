@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">QrPayment</string>
+    <string name="no_token">Maaf autentikasi salah</string>
 </resources>

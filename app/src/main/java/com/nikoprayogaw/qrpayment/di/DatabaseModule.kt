@@ -17,11 +17,13 @@ import javax.inject.Singleton
 object DatabaseModule {
 
     @Provides
+    @Singleton
     fun provideUserDao(appDatabase: AppRoomDatabase): UserDao {
         return appDatabase.userDao()
     }
 
     @Provides
+    @Singleton
     fun providePaymentDao(appDatabase: AppRoomDatabase): PaymentDao {
         return appDatabase.paymentDao()
     }
