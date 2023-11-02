@@ -41,7 +41,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".presentation.paymentdetail.PaymentDetailActivity"
+            android:name=".presentation.screens.paymentdetail.PaymentDetailActivity"
             android:parentActivityName=".presentation.screens.scanqr.ScanQrActivity"
             android:exported="true"
             android:label="@string/app_name"

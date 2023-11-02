@@ -20,7 +20,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.common.util.concurrent.ListenableFuture
-import com.nikoprayogaw.qrpayment.presentation.paymentdetail.PaymentDetailActivity
+import com.nikoprayogaw.qrpayment.domain.model.qrcode.QrCodeData
+import com.nikoprayogaw.qrpayment.presentation.screens.paymentdetail.PaymentDetailActivity
 import com.nikoprayogaw.qrpayment.presentation.screens.scanqr.util.BarCodeAnalyser
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -31,7 +32,6 @@ fun CameraPreview() {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     var preview by remember { mutableStateOf<Preview?>(null) }
-    val barCodeVal = remember { mutableStateOf("") }
 
     AndroidView(
         factory = { AndroidViewContext ->
@@ -61,17 +61,19 @@ fun CameraPreview() {
                 val barcodeAnalyser = BarCodeAnalyser { barcodes ->
                     barcodes.forEach { barcode ->
                         barcode.rawValue?.let { barcodeValue ->
-                            barCodeVal.value = barcodeValue
                             val dataQr = barcodeValue.split(".")
                             if (dataQr.size == 4) {
+                                val data = QrCodeData(
+                                    bank = dataQr[0],
+                                    transactionId = dataQr[1],
+                                    merchantName = dataQr[2],
+                                    amount = dataQr[3]
+                                )
                                 context.startActivity(Intent(
                                     context,
                                     PaymentDetailActivity::class.java
                                 )
-                                    .putExtra("bank", dataQr[0])
-                                    .putExtra("transactionId", dataQr[1].toLong())
-                                    .putExtra("merchantName", dataQr[2])
-                                    .putExtra("amount", dataQr[3].toLong())
+                                    .putExtra("QR_STRING", data)
                                 )
                             } else {
                                 Toast.makeText(context, barcodeValue, Toast.LENGTH_SHORT).show()

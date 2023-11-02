@@ -1,6 +1,9 @@
-package com.nikoprayogaw.qrpayment.presentation.paymentdetail
+package com.nikoprayogaw.qrpayment.presentation.screens.payment
 
-import android.widget.Toast
+import android.app.Activity
+import android.content.Intent
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -20,31 +23,18 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import com.nikoprayogaw.qrpayment.R
-import com.nikoprayogaw.qrpayment.domain.model.payment.Payment
-import com.nikoprayogaw.qrpayment.presentation.viewmodel.MutasiViewModel
+import com.nikoprayogaw.qrpayment.domain.model.qrcode.QrCodeData
 import com.nikoprayogaw.qrpayment.helper.CurrencyFormatter
-import com.nikoprayogaw.qrpayment.helper.GetDateNow
 import com.nikoprayogaw.qrpayment.helper.findActivity
 
 @Composable
-fun PaymentDetailScreen(
-    lifeCycleOwner: LifecycleOwner,
-    mutasiViewModel: MutasiViewModel = hiltViewModel(),
-    navigateToBack: () -> Unit
-) {
+fun SuccessPaymentScreen() {
     val context = LocalContext.current
     val activity = context.findActivity()
     val intent = activity?.intent
-    val bank = intent?.getStringExtra("bank")
-    val transactionId = intent?.getLongExtra("transactionId", 0)
-    val merchantName = intent?.getStringExtra("merchantName")
-    val amount = intent?.getLongExtra("amount", 0)
-    val check = intent?.getBooleanExtra("check", false)
-    val success = MutableLiveData<Boolean>()
+    val dataQrCode = intent?.getSerializableExtra("QR_STRING", QrCodeData::class.java)
 
     Card(
         modifier = Modifier
@@ -86,58 +76,39 @@ fun PaymentDetailScreen(
                 Spacer(modifier = Modifier.width(20.dp))
                 Column {
                     Text(
-                        text = "ID Transaksi: $transactionId",
+                    text = "Pembayaran Berhasil",
+                    fontSize = 24.sp,
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = "ID Transaksi: ${dataQrCode?.transactionId}",
                         fontSize = 18.sp,
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(
-                        text = "Merchant: $merchantName",
+                        text = "Merchant: ${dataQrCode?.merchantName}",
                         fontSize = 14.sp,
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(
-                        text = "Bank: $bank",
+                        text = "Bank: ${dataQrCode?.bank}",
                         fontSize = 18.sp,
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(
-                        text = "Total Pembayaran: ${CurrencyFormatter(amount?:0)}",
+                        text = "Total Pembayaran: ${CurrencyFormatter(dataQrCode?.amount?.toLong() ?: 0)}",
                         fontSize = 14.sp,
                     )
                 }
             }
         }
     }
-
-//    if (!check) {
-        Button(
-            onClick = {
-                try {
-                    mutasiViewModel.addPayment(
-                        Payment(
-                            userId = 1,
-                            transactionId = transactionId.toString(),
-                            bankName = bank.toString(),
-                            merchantName = merchantName.toString(),
-                            amount = amount?:0,
-                            date = GetDateNow()
-                        )
-                    )
-                    success.value = true
-                } catch (err: Exception) {
-                    success.value = false
-                    Toast.makeText(context, "Pembayaran Gagal", Toast.LENGTH_SHORT).show()
-
-                }
-            }
-        ) {
-            Text(text = "Bayar")
+    Button(
+        onClick = {
+            activity?.finish()
         }
-//    }
-
-    success.observe(lifeCycleOwner) {
-        if (it) {
-            navigateToBack.invoke()
-        }
+    ) {
+        Text(text = "OK")
     }
+
 }

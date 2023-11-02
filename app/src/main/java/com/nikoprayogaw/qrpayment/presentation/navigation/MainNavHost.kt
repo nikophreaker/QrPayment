@@ -9,7 +9,7 @@ import androidx.navigation.compose.*
 import com.nikoprayogaw.qrpayment.presentation.navigation.model.GeneralScreen
 import com.nikoprayogaw.qrpayment.presentation.screens.chart.ChartScreen
 import com.nikoprayogaw.qrpayment.presentation.screens.home.HomeScreen
-import com.nikoprayogaw.qrpayment.presentation.screens.mutasi.MutasiScreen
+import com.nikoprayogaw.qrpayment.presentation.screens.mutasi.MutationScreen
 import com.nikoprayogaw.qrpayment.presentation.screens.user.UserScreen
 
 @Composable
@@ -27,7 +27,7 @@ fun MainNavHost(
             HomeScreen()
         }
         composable(GeneralScreen.Mutation.route) {
-            MutasiScreen(navigateToDetail = {
+            MutationScreen(navigateToDetail = {
 
             })
         }
@@ -38,10 +38,6 @@ fun MainNavHost(
                 }
             )
         }
-//        composable(GeneralScreen.ScanQr.route) {
-//            val intent = Intent(context, ScanQrActivity::class.java)
-//            context.startActivity(intent)
-//        }
         composable(
             GeneralScreen.DetailUser.route,
             arguments = listOf(navArgument("idUser") { type = NavType.IntType })

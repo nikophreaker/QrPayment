@@ -24,50 +24,67 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.nikoprayogaw.qrpayment.R
+import com.nikoprayogaw.qrpayment.common.network.Resource
 import com.nikoprayogaw.qrpayment.domain.model.payment.Payment
 import com.nikoprayogaw.qrpayment.helper.CurrencyFormatter
-import com.nikoprayogaw.qrpayment.presentation.viewmodel.MutasiViewModel
+import com.nikoprayogaw.qrpayment.presentation.compose.LoadingDialog
+import com.nikoprayogaw.qrpayment.presentation.viewmodel.MutationViewModel
 
 @Composable
-fun MutasiScreen(
+fun MutationScreen(
     navigateToDetail: (Int) -> Unit,
-    mutasiViewModel: MutasiViewModel = hiltViewModel()
+    mutationViewModel: MutationViewModel = hiltViewModel()
 ) {
-    mutasiViewModel.getAllPayment()
+    LaunchedEffect(Unit) {
+        mutationViewModel.getAllPayment()
+    }
     val lazyListState = rememberLazyListState()
     Scaffold {
-            it.calculateBottomPadding()
-            val paymentList: List<Payment> by mutasiViewModel.paymentList.observeAsState(initial = listOf())
-            if (paymentList.isNotEmpty()) {
-                Surface(color = Color.White, modifier = Modifier.fillMaxSize()) {
-                    LazyColumn(
-                        modifier = Modifier.padding(vertical = 4.dp),
-                        state = lazyListState
-                    ) {
-                        items(items = paymentList) { payment ->
-                            PaymentCard(payment = payment, navigateToDetail = navigateToDetail)
+        it.calculateBottomPadding()
+        mutationViewModel.resourceGetPayment.collectAsState().value.let { state ->
+            when (state) {
+                Resource.Idle -> {}
+                Resource.Loading -> LoadingDialog(visible = true)
+                is Resource.Success -> {
+                    val paymentList = state.data
+                    if (paymentList.isNotEmpty()) {
+                        Surface(color = Color.White, modifier = Modifier.fillMaxSize()) {
+                            LazyColumn(
+                                modifier = Modifier.padding(vertical = 4.dp),
+                                state = lazyListState
+                            ) {
+                                items(items = paymentList) { payment ->
+                                    PaymentCard(
+                                        payment = payment,
+                                        navigateToDetail = navigateToDetail
+                                    )
+                                }
+                            }
+                        }
+                    } else {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(20.dp),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Text(
+                                "No Payment yet.",
+                                fontSize = 20.sp,
+                                modifier = Modifier
+                                    .wrapContentWidth()
+                                    .wrapContentHeight(),
+                                textAlign = TextAlign.Center
+                            )
                         }
                     }
                 }
-            } else {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(20.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Text(
-                        "No Payment yet.",
-                        fontSize = 20.sp,
-                        modifier = Modifier
-                            .wrapContentWidth()
-                            .wrapContentHeight(),
-                        textAlign = TextAlign.Center
-                    )
-                }
+
+                is Resource.Error -> {}
             }
         }
+    }
 }
 
 
@@ -93,13 +110,15 @@ private fun LazyListState.isScrollingUp(): Boolean {
 }
 
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun PaymentCard(payment: Payment, navigateToDetail: (Int) -> Unit) {
     ElevatedCard(
         modifier = Modifier
             .padding(10.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable {
+                navigateToDetail.invoke(1)
+            },
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
@@ -112,19 +131,6 @@ fun PaymentCard(payment: Payment, navigateToDetail: (Int) -> Unit) {
         Column(
             modifier = Modifier
                 .padding(20.dp)
-                .clickable {
-                    navigateToDetail.invoke(1)
-//                    navController.context.startActivity(Intent(
-//                        navController.context,
-//                        PaymentDetailActivity::class.java
-//                    )
-//                        .putExtra("bank", payment.bankName)
-//                        .putExtra("transactionId", payment.transactionId)
-//                        .putExtra("merchantName", payment.merchantName)
-//                        .putExtra("amount", payment.amount)
-//                        .putExtra("check", true)
-//                    )
-                }
                 .animateContentSize(
                     animationSpec = spring(
                         dampingRatio = Spring.DampingRatioMediumBouncy,

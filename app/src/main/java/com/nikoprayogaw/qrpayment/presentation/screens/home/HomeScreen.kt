@@ -47,6 +47,7 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         userViewModel.getAllUser()
         userViewModel.findUserById(123456789)
+        promoViewModel.getPromo()
     }
     val userDetail: User? by userViewModel.foundUser.observeAsState()
     val allUsers: List<User> by userViewModel.userList.observeAsState(initial = listOf())

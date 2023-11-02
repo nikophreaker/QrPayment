@@ -10,6 +10,8 @@ interface UserDao {
 
     @Query("SELECT * FROM users WHERE accountNumber = :accountNumber")
     fun findUserByAccountNumber(accountNumber: Long): User
+    @Query("UPDATE users SET balance = balance - :amount WHERE accountNumber = :accountNumber")
+    fun updateBalance(accountNumber: Long, amount: Long)
 
     @Query("SELECT * FROM users")
     fun getAllUsers(): List<User>

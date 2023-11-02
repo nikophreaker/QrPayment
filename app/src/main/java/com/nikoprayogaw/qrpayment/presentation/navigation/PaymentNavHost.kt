@@ -1,5 +1,6 @@
 package com.nikoprayogaw.qrpayment.presentation.navigation
 
+import android.app.Activity
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -8,8 +9,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.*
 import androidx.navigation.compose.*
 import com.nikoprayogaw.qrpayment.presentation.navigation.model.GeneralScreen
-import com.nikoprayogaw.qrpayment.presentation.paymentdetail.PaymentDetailScreen
-import com.nikoprayogaw.qrpayment.presentation.paymentdetail.SuccessPaymentScreen
+import com.nikoprayogaw.qrpayment.presentation.screens.paymentdetail.PaymentDetailScreen
+import com.nikoprayogaw.qrpayment.presentation.screens.payment.SuccessPaymentScreen
 
 @Composable
 fun PaymentNavHost(
@@ -20,7 +21,7 @@ fun PaymentNavHost(
     val context = LocalContext.current
     NavHost(
         navController = navController,
-        startDestination = GeneralScreen.Home.route,
+        startDestination = GeneralScreen.DetailPayment.route,
         modifier = Modifier.padding(innerPadding),
     ) {
         composable(GeneralScreen.DetailPayment.route) {
@@ -28,6 +29,10 @@ fun PaymentNavHost(
                 lifeCycleOwner = lifeCycleOwner,
                 navigateToBack = {
                     navController.navigateUp()
+                },
+                navigateToSuccess = {
+                    navController.navigate(GeneralScreen.PaymentSuccess.route)
+                    (context as Activity).finish()
                 }
             )
         }
