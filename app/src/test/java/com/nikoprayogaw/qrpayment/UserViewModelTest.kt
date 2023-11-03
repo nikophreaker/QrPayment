@@ -1,34 +1,30 @@
 package com.nikoprayogaw.qrpayment
 
 import android.graphics.BitmapFactory
-import androidx.lifecycle.*
-import androidx.test.espresso.base.*
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
-import com.nikoprayogaw.qrpayment.domain.model.user.UserDao
+import com.nikoprayogaw.qrpayment.common.network.Resource
+import com.nikoprayogaw.qrpayment.domain.model.user.User
 import com.nikoprayogaw.qrpayment.domain.repository.user.UserRepositoryImpl
 import com.nikoprayogaw.qrpayment.domain.usecase.users.AddUserUseCase
 import com.nikoprayogaw.qrpayment.domain.usecase.users.GetSpecifiedUsersUseCase
 import com.nikoprayogaw.qrpayment.domain.usecase.users.GetUsersUseCase
 import com.nikoprayogaw.qrpayment.domain.usecase.users.UpdateBalanceUserUseCase
 import com.nikoprayogaw.qrpayment.presentation.viewmodel.UserViewModel
-import dagger.hilt.android.testing.*
-import io.mockk.mockk
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import io.mockk.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.*
-import org.junit.runner.RunWith
 import javax.inject.Inject
 
-
-@RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
-class AllInstrumentedTest {
-
-    var userDao: UserDao = mockk(relaxed = true)
+class UserViewModelTest {
 
     @Inject
     lateinit var repo: UserRepositoryImpl
@@ -44,13 +40,14 @@ class AllInstrumentedTest {
 
     @Inject
     lateinit var updateBalanceUserUseCase: UpdateBalanceUserUseCase
-//    @Inject
+
     lateinit var userViewModel: UserViewModel // = mockk<UserViewModel>(relaxed = true)
 
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
 
 //    private val repo: UserRepositoryImpl = mockk(relaxed = true)
+
     @Test
     fun testDecodeBarcodeToData() {
         val qrcode = BitmapFactory.decodeResource(
@@ -106,22 +103,21 @@ class AllInstrumentedTest {
         userViewModel = UserViewModel(getUsersUseCase = getUsersUseCase, getSpecifiedUsersUseCase = getSpecifiedUserUseCase, addUserUseCase = addUserUseCase, updateBalanceUserUseCase = updateBalanceUserUseCase)
     }
 
-//    @Test
-//    fun testAddUser() {
-//        val user = mockk<User>()
-//        every { userViewModel.addUser(user) } returns Unit
-//    }
+    @Test
+    fun testAddUser() {
+        val user = mockk<User>()
+        every { userViewModel.addUser(user) } returns Unit
+    }
 
     @Test
     fun loadAllUser() = runTest {
-//        coEvery { userViewModel.resourceGetUsers.value } returns Resource.Success(
-//            userDao.getAllUsers()
-//        )
+        coEvery { repo.getAllUsers() } returns flow { Resource.Success(
+            listOf<User>()
+        ).data }
         userViewModel.getAllUser()
-//        coVerify { userViewModel.resourceGetUsers.value }
-        userViewModel.resourceGetUsers.collect { state ->
-            println("stateData :$state")
-//            assert(state is Resource.Success<*>)
+        coVerify { repo.getAllUsers() }
+        userViewModel.resourceGetUsers.value.let { state ->
+            assert(state is Resource.Success<*>)
         }
     }
 }

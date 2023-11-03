@@ -23,6 +23,8 @@ android {
             useSupportLibrary true
         }
 
+        testInstrumentationRunner "com.nikoprayogaw.qrpayment.HiltTestRunner"
+
         buildConfigField("String", "BASE_URL", "\"https://content.digi46.id/\"")
         buildConfigField("String", "BEARER_TOKEN", "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjc1OTE0MTUwLCJleHAiOjE2Nzg1MDYxNTB9.TcIgL5CDZYg9o8CUsSjUbbUdsYSaLutOWni88ZBs9S8\"")
     }
@@ -77,16 +79,12 @@ dependencies {
     implementation "androidx.compose.material3:material3-window-size-class:$material3_version"
     implementation "androidx.core:core-splashscreen:$splashscreen_version"
 
-    //tests
+    //unit tests
     testImplementation "junit:junit:$junit_version"
     testImplementation "io.mockk:mockk:$mockk_version"
-    androidTestImplementation "io.mockk:mockk-android:$mockk_version"
-    androidTestImplementation "io.mockk:mockk-agent:$mockk_version"
-    androidTestImplementation "androidx.test.ext:junit:$junit_ext_version"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
-    debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
-    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
+    testImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlinx_version"
+    testImplementation "org.robolectric:robolectric:$robolectric_version"
 
     // Compose dependencies
     implementation "androidx.compose.material:material-icons-extended:$compose_ui_version"
@@ -99,8 +97,16 @@ dependencies {
     implementation "androidx.hilt:hilt-navigation-compose:$hilt_nav_version"
 
     // For instrumentation tests
-    androidTestImplementation  "com.google.dagger:hilt-android-testing:$android_test_version"
+    androidTestImplementation  "com.google.dagger:hilt-android-testing:$hilt_version"
     kspAndroidTest "com.google.dagger:hilt-compiler:$hilt_test_version"
+    androidTestImplementation "io.mockk:mockk-android:$mockk_version"
+    androidTestImplementation "io.mockk:mockk-agent:$mockk_version"
+    androidTestImplementation "androidx.test.ext:junit:$junit_ext_version"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
+    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
+    androidTestImplementation "org.robolectric:robolectric:$robolectric_version"
 
     //Camera & barcode
     implementation "androidx.camera:camera-core:$camerax_version"

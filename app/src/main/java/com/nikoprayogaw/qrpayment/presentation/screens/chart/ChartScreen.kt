@@ -153,7 +153,8 @@ fun CreateChart(yearPorto: List<Point>, monthPorto: List<PieChartData.Slice>) {
                 DonutPieChart(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(400.dp),
+                        .height(400.dp)
+                        .padding(5.dp),
                     pieChartData = donutChartData,
                     pieChartConfig = donutChartConfig
                 )
