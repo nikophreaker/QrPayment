@@ -3,6 +3,7 @@ package com.nikoprayogaw.qrpayment.di
 import android.content.Context
 import com.nikoprayogaw.qrpayment.common.AuthorizationInterceptor
 import com.nikoprayogaw.qrpayment.common.network.NetworkConfig
+import com.nikoprayogaw.qrpayment.data.remote.PortoApi
 import com.nikoprayogaw.qrpayment.data.remote.PromoApi
 import dagger.Module
 import dagger.Provides
@@ -53,5 +54,10 @@ object NetworkModule {
     @Singleton
     fun providePromoApi(retorfit: Retrofit): PromoApi {
         return retorfit.create(PromoApi::class.java)
+    }
+    @Provides
+    @Singleton
+    fun providePortoApi(retorfit: Retrofit): PortoApi {
+        return retorfit.create(PortoApi::class.java)
     }
 }

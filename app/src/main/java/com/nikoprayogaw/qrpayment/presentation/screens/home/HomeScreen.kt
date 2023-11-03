@@ -3,6 +3,7 @@ package com.nikoprayogaw.qrpayment.presentation.screens.home
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
@@ -35,6 +36,8 @@ import com.nikoprayogaw.qrpayment.presentation.screens.promo.PromoDetailActivity
 import com.nikoprayogaw.qrpayment.presentation.viewmodel.PromoViewModel
 import com.nikoprayogaw.qrpayment.presentation.viewmodel.UserViewModel
 import com.nikoprayogaw.qrpayment.helper.CurrencyFormatter
+import com.nikoprayogaw.qrpayment.presentation.compose.PromoCard
+import com.nikoprayogaw.qrpayment.presentation.compose.UserCard
 import com.nikoprayogaw.qrpayment.presentation.viewmodel.HomeViewModel
 
 @Composable
@@ -43,24 +46,56 @@ fun HomeScreen(
     promoViewModel: PromoViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    val userDetail: MutableState<User?> = remember {
+        mutableStateOf(null)
+    }
 
     LaunchedEffect(Unit) {
         userViewModel.getAllUser()
         userViewModel.findUserById(123456789)
         promoViewModel.getPromo()
     }
-    val userDetail: User? by userViewModel.foundUser.observeAsState()
-    val allUsers: List<User> by userViewModel.userList.observeAsState(initial = listOf())
-    if (allUsers.isEmpty()) {
-        userViewModel.addUser(User(
-            accountNumber = 123456789,
-            userName = "Niko Prayoga",
-            email = "nikx449@gmail.com",
-            phone = "085891334726",
-            balance = 4600000
-        ))
+    userViewModel.resourceGetUser.collectAsState().value.let { state ->
+        when(state) {
+            Resource.Idle -> {}
+            Resource.Loading -> LoadingDialog(visible = true)
+            is Resource.Success -> {
+                userDetail.value = state.data
+            }
+            is Resource.Error -> {}
+        }
     }
-    userViewModel.findUserById(123456789)
+    userViewModel.resourceGetUsers.collectAsState().value.let { state ->
+        when(state) {
+            Resource.Idle -> {}
+            Resource.Loading -> LoadingDialog(visible = true)
+            is Resource.Success -> {
+                userViewModel.clearedGetUsers()
+                val allUsers = state.data
+                if (allUsers.isEmpty()) {
+                    userViewModel.addUser(User(
+                        accountNumber = 123456789,
+                        userName = "Niko Prayoga",
+                        email = "nikx449@gmail.com",
+                        phone = "085891334726",
+                        balance = 4600000
+                    ))
+                }
+                userViewModel.findUserById(123456789)
+            }
+            is Resource.Error -> {}
+        }
+    }
+    userViewModel.resourceAddUser.collectAsState().value.let { state ->
+        when(state) {
+            Resource.Idle -> {}
+            Resource.Loading -> LoadingDialog(visible = true)
+            is Resource.Success -> {
+                userViewModel.clearedAddUser()
+            }
+            is Resource.Error -> {}
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -71,11 +106,11 @@ fun HomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Welcome to the MBenking",
+            text = "Welcome to the MBanking",
             style = MaterialTheme.typography.titleMedium
         )
         Surface(color = Color.White) {
-            if (userDetail != null) UserCard(user = userDetail!!)
+            if (userDetail.value != null) UserCard(user = userDetail.value!!)
         }
         Text(
             text = "PROMO",
@@ -101,123 +136,5 @@ fun HomeScreen(
     }
 }
 
-@Composable
-fun UserCard(user: User) {
-    ElevatedCard(
-        modifier = Modifier
-            .padding(10.dp)
-            .fillMaxWidth(),
-        shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White,
-            contentColor = Color.Black
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 2.dp
-        )
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(20.dp)
-                .clickable {
-                }
-                .animateContentSize(
-                    animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioMediumBouncy,
-                        stiffness = Spring.StiffnessLow
-                    )
-                )
-        ) {
-            Row {
-                Image(
-                    painter = painterResource(id = R.mipmap.user),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    colorFilter = ColorFilter.tint(
-                        colorResource(id = R.color.purple_500),
-                    ),
-                    modifier = Modifier
-                        .size(50.dp)
-                        .clip(RoundedCornerShape(50)),
-                )
-                Spacer(modifier = Modifier.width(20.dp))
-                Column {
-                    Text(
-                        text = user.userName,
-                        fontSize = 18.sp,
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Text(
-                        text = "Balance: ${CurrencyFormatter(user.balance)}",
-                        fontSize = 14.sp,
-                    )
-                }
-            }
-        }
-    }
-}
 
-@Composable
-fun PromoCard(promo: PromoItem, context: Context) {
-    ElevatedCard(
-        modifier = Modifier
-            .padding(10.dp)
-            .fillMaxWidth(),
-        shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White,
-            contentColor = Color.Black
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 2.dp
-        )
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(20.dp)
-                .clickable {
-                    context.startActivity(
-                        Intent(
-                            context,
-                            PromoDetailActivity::class.java
-                        )
-                            .putExtra("img", promo.img?.formats?.small?.url)
-                            .putExtra("promoName", promo.nama)
-                    )
-                }
-                .animateContentSize(
-                    animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioMediumBouncy,
-                        stiffness = Spring.StiffnessLow
-                    )
-                )
-        ) {
-            Row {
-                Image(
-                    painter = painterResource(id = R.mipmap.user),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    colorFilter = ColorFilter.tint(
-                        colorResource(id = R.color.purple_500),
-                    ),
-                    modifier = Modifier
-                        .size(50.dp)
-                        .clip(RoundedCornerShape(50)),
-                )
-                Spacer(modifier = Modifier.width(20.dp))
-                Column {
-                    Image(
-                        painter = rememberAsyncImagePainter(model = promo.img?.formats?.small?.url),
-                        contentDescription = promo.alt
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Text(
-                        text = "${promo.nama}",
-                        fontSize = 14.sp,
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
-                }
-            }
-        }
-    }
-}
+

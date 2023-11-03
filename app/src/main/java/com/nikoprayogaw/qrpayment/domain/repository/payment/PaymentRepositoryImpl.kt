@@ -5,6 +5,7 @@ import com.nikoprayogaw.qrpayment.domain.model.payment.*
 import dagger.Module
 import dagger.hilt.InstallIn
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
@@ -17,6 +18,10 @@ class PaymentRepositoryImpl @Inject constructor(
 
     override fun updatePaymentDetails(payment: Payment) = flow {
         emit(paymentDao.updatePaymentDetails(payment))
+    }
+
+    override fun findPaymentById(paymentId: Int): Flow<Payment> = flow {
+        emit(paymentDao.findPaymentById(paymentId))
     }
 
     override fun getAllPayment() = flow {

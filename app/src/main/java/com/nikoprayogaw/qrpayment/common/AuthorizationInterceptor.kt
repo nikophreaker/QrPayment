@@ -11,12 +11,21 @@ import java.net.HttpURLConnection
 
 class AuthorizationInterceptor(val context: Context) : Interceptor {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val request: Request = chain.request()
 
         if (request.url.toString().contains("promos")) {
             val dataBody = ReadJSONFromAssets(context, "promo.json")
+            return Response.Builder()
+                .code(200)
+                .request(chain.request())
+                .protocol(Protocol.HTTP_1_1)
+                .message("Success")
+                .body(dataBody.toResponseBody())
+                .addHeader("content-type", "application/json")
+                .build()
+        } else if (request.url.toString().contains("porto")) {
+            val dataBody = ReadJSONFromAssets(context, "userPortofolio.json")
             return Response.Builder()
                 .code(200)
                 .request(chain.request())

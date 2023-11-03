@@ -24,57 +24,80 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import com.nikoprayogaw.qrpayment.R
+import com.nikoprayogaw.qrpayment.common.network.Resource
 import com.nikoprayogaw.qrpayment.domain.model.payment.Payment
 import com.nikoprayogaw.qrpayment.domain.model.qrcode.QrCodeData
 import com.nikoprayogaw.qrpayment.presentation.viewmodel.MutationViewModel
 import com.nikoprayogaw.qrpayment.helper.CurrencyFormatter
 import com.nikoprayogaw.qrpayment.helper.GetDateNow
 import com.nikoprayogaw.qrpayment.helper.findActivity
+import com.nikoprayogaw.qrpayment.presentation.compose.LoadingDialog
 import com.nikoprayogaw.qrpayment.presentation.viewmodel.UserViewModel
 
 @Composable
 fun PaymentDetailScreen(
-    lifeCycleOwner: LifecycleOwner,
     mutationViewModel: MutationViewModel = hiltViewModel(),
     userViewModel: UserViewModel = hiltViewModel(),
-    navigateToBack: () -> Unit,
     navigateToSuccess: () -> Unit
 ) {
     val context = LocalContext.current
     val activity = context.findActivity()
     val intent = activity?.intent
     val dataQrCode = intent?.getSerializableExtra("QR_STRING", QrCodeData::class.java)
-    val check = intent?.getBooleanExtra("check", false) ?: false
-    val success = MutableLiveData<Boolean>()
 
     Scaffold(
         bottomBar = {
-            if (!check) {
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = {
-                        try {
-                            mutationViewModel.addPayment(
-                                Payment(
-                                    userId = 1,
-                                    transactionId = dataQrCode?.transactionId ?: "",
-                                    bankName = dataQrCode?.bank ?: "",
-                                    merchantName = dataQrCode?.merchantName ?: "",
-                                    amount = dataQrCode?.amount?.toLong() ?: 0,
-                                    date = GetDateNow()
-                                )
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    try {
+                        mutationViewModel.addPayment(
+                            Payment(
+                                userId = 1,
+                                transactionId = dataQrCode?.transactionId ?: "",
+                                bankName = dataQrCode?.bank ?: "",
+                                merchantName = dataQrCode?.merchantName ?: "",
+                                amount = dataQrCode?.amount?.toLong() ?: 0L,
+                                date = GetDateNow()
                             )
-                            navigateToSuccess.invoke()
-                        } catch (err: Exception) {
-                            Toast.makeText(context, "Pembayaran Gagal", Toast.LENGTH_SHORT).show()
-                        }
+                        )
+                    } catch (err: Exception) {
+                        Toast.makeText(context, "Pembayaran Gagal", Toast.LENGTH_SHORT).show()
                     }
-                ) {
-                    Text(text = "Bayar")
                 }
+            ) {
+                Text(text = "Bayar")
             }
         }
     ) {
+        mutationViewModel.resourceAddPayment.collectAsState().value.let { state ->
+            when (state) {
+                Resource.Idle -> {}
+                Resource.Loading -> LoadingDialog(visible = true)
+                is Resource.Success -> {
+                    userViewModel.updateBalance(
+                        hashMapOf(
+                            "accountNumber" to 123456789L,
+                            "amount" to (dataQrCode?.amount?.toLong() ?: 0L),
+                        )
+                    )
+                }
+
+                is Resource.Error -> {}
+            }
+        }
+        userViewModel.resourceUpdateBalance.collectAsState().value.let { state ->
+            when (state) {
+                Resource.Idle -> {}
+                Resource.Loading -> LoadingDialog(visible = true)
+                is Resource.Success -> {
+                    userViewModel.clearedUpdateBalance()
+                    navigateToSuccess.invoke()
+                }
+
+                is Resource.Error -> {}
+            }
+        }
         Card(
             modifier = Modifier
                 .padding(10.dp)
@@ -137,12 +160,6 @@ fun PaymentDetailScreen(
                     }
                 }
             }
-        }
-    }
-
-    success.observe(lifeCycleOwner) {
-        if (it) {
-            navigateToBack.invoke()
         }
     }
 }

@@ -13,6 +13,8 @@ interface PaymentRepository {
 
     fun updatePaymentDetails(payment: Payment): Flow<Unit>
 
+    fun findPaymentById(paymentId: Int): Flow<Payment>
+
     fun getAllPayment() : Flow<List<Payment>>
 
     fun deletePayment(payment: Payment): Flow<Unit>

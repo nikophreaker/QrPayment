@@ -9,10 +9,13 @@ interface PaymentDao {
     suspend fun addPayment(payment: Payment)
 
     @Query("SELECT * FROM payment WHERE userId = :userId")
-    fun findPaymentByUserId(userId: String): Payment
+    suspend fun findPaymentByUserId(userId: String): Payment
+
+    @Query("SELECT * FROM payment WHERE id = :id")
+    suspend fun findPaymentById(id: Int): Payment
 
     @Query("SELECT * FROM payment")
-    fun getAllPaymentUser(): List<Payment>
+    suspend fun getAllPaymentUser(): List<Payment>
 
     @Update
     suspend fun updatePaymentDetails(payment: Payment)

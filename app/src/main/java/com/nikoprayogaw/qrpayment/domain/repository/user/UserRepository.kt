@@ -3,41 +3,20 @@ package com.nikoprayogaw.qrpayment.domain.repository.user
 import androidx.lifecycle.MutableLiveData
 import com.nikoprayogaw.qrpayment.domain.model.user.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class UserRepository @Inject constructor(private val userDao: UserDao) {
+interface UserRepository {
 
-    val allUsers = MutableLiveData<List<User>>()
-    val foundUser = MutableLiveData<User>()
-    private val coroutineScope = CoroutineScope(Dispatchers.Main)
+    fun addUser(newUser: User): Flow<Unit>
 
-    fun addUser(newUser: User) {
-        coroutineScope.launch(Dispatchers.IO) {
-            userDao.addUser(newUser)
-        }
-    }
+    fun updateUserDetails(newUser: User): Flow<Unit>
 
-    fun updateUserDetails(newUser: User) {
-        coroutineScope.launch(Dispatchers.IO) {
-            userDao.updateUserDetails(newUser)
-        }
-    }
+    fun updateBalance(accountNumber: Long, amount: Long): Flow<Unit>
 
-    fun getAllUsers() {
-        coroutineScope.launch(Dispatchers.IO) {
-            allUsers.postValue(userDao.getAllUsers())
-        }
-    }
+    fun getAllUsers(): Flow<List<User>>
 
-    fun deleteUser(employee: User) {
-        coroutineScope.launch(Dispatchers.IO) {
-            userDao.deleteUser(employee)
-        }
-    }
+    fun deleteUser(user: User): Flow<Unit>
 
-    fun findUserByAccountNumber(accountNumber: Long) {
-        coroutineScope.launch(Dispatchers.IO) {
-            foundUser.postValue(userDao.findUserByAccountNumber(accountNumber))
-        }
-    }
+    fun findUserByAccountNumber(accountNumber: Long): Flow<User>
 }

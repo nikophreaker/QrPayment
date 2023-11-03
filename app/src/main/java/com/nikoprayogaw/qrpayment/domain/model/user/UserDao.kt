@@ -9,12 +9,12 @@ interface UserDao {
     suspend fun addUser(user: User)
 
     @Query("SELECT * FROM users WHERE accountNumber = :accountNumber")
-    fun findUserByAccountNumber(accountNumber: Long): User
+    suspend fun findUserByAccountNumber(accountNumber: Long): User
     @Query("UPDATE users SET balance = balance - :amount WHERE accountNumber = :accountNumber")
-    fun updateBalance(accountNumber: Long, amount: Long)
+    suspend fun updateBalance(accountNumber: Long, amount: Long)
 
     @Query("SELECT * FROM users")
-    fun getAllUsers(): List<User>
+    suspend fun getAllUsers(): List<User>
 
     @Update
     suspend fun updateUserDetails(user: User)

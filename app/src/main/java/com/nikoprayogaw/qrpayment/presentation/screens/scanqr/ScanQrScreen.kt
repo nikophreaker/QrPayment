@@ -1,5 +1,6 @@
 package com.nikoprayogaw.qrpayment.presentation.screens.scanqr
 
+import android.app.Activity
 import android.content.Intent
 import android.util.Log
 import android.view.ViewGroup
@@ -69,6 +70,7 @@ fun CameraPreview() {
                                     merchantName = dataQr[2],
                                     amount = dataQr[3]
                                 )
+                                (context as? Activity)?.finish()
                                 context.startActivity(Intent(
                                     context,
                                     PaymentDetailActivity::class.java

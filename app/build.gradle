@@ -124,6 +124,7 @@ dependencies {
 
     //Other
     implementation "io.coil-kt:coil-compose:$coil_version"
+    implementation "co.yml:ycharts:$ycharts_version"
 }
 
 // Allow references to generated code

@@ -18,6 +18,17 @@ object DatabaseModule {
 
     @Provides
     @Singleton
+    fun provideAppDatabase(@ApplicationContext context: Context): AppRoomDatabase {
+        return Room.databaseBuilder(
+            context.applicationContext,
+            AppRoomDatabase::class.java,
+            "appDB"
+        )
+            .build()
+    }
+
+    @Provides
+    @Singleton
     fun provideUserDao(appDatabase: AppRoomDatabase): UserDao {
         return appDatabase.userDao()
     }
@@ -26,17 +37,6 @@ object DatabaseModule {
     @Singleton
     fun providePaymentDao(appDatabase: AppRoomDatabase): PaymentDao {
         return appDatabase.paymentDao()
-    }
-
-    @Provides
-    @Singleton
-    fun provideAppDatabase(@ApplicationContext context: Context): AppRoomDatabase {
-        return Room.databaseBuilder(
-            context.applicationContext,
-            AppRoomDatabase::class.java,
-            "appDB"
-        )
-            .build()
     }
 
 }

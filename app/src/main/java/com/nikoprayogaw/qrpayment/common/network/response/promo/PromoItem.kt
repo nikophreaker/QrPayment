@@ -2,6 +2,7 @@ package com.nikoprayogaw.qrpayment.common.network.response.promo
 
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class PromoItem(
     @SerializedName("alt")
@@ -36,4 +37,4 @@ data class PromoItem(
     var title: Any?,
     @SerializedName("updated_at")
     var updatedAt: String?
-)
+) : Serializable

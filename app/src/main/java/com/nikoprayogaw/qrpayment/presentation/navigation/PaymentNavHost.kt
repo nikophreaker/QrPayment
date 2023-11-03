@@ -8,13 +8,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.*
 import androidx.navigation.compose.*
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.nikoprayogaw.qrpayment.helper.findActivity
 import com.nikoprayogaw.qrpayment.presentation.navigation.model.GeneralScreen
 import com.nikoprayogaw.qrpayment.presentation.screens.paymentdetail.PaymentDetailScreen
 import com.nikoprayogaw.qrpayment.presentation.screens.payment.SuccessPaymentScreen
+import com.nikoprayogaw.qrpayment.presentation.screens.paymentdetail.PaymentDetailActivity
 
 @Composable
 fun PaymentNavHost(
-    lifeCycleOwner: LifecycleOwner,
     navController: NavHostController,
     innerPadding: PaddingValues
 ) {
@@ -26,18 +28,17 @@ fun PaymentNavHost(
     ) {
         composable(GeneralScreen.DetailPayment.route) {
             PaymentDetailScreen(
-                lifeCycleOwner = lifeCycleOwner,
-                navigateToBack = {
-                    navController.navigateUp()
-                },
                 navigateToSuccess = {
                     navController.navigate(GeneralScreen.PaymentSuccess.route)
-                    (context as Activity).finish()
                 }
             )
         }
         composable(GeneralScreen.PaymentSuccess.route) {
-            SuccessPaymentScreen()
+            SuccessPaymentScreen(
+                navigateToHome = {
+                    (context as? Activity)?.finish()
+                }
+            )
         }
     }
 }

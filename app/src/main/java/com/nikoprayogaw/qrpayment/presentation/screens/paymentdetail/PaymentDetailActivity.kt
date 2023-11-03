@@ -18,7 +18,7 @@ class PaymentDetailActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             Scaffold {
-                PaymentNavHost(lifeCycleOwner = this, navController = navController, innerPadding = it)
+                PaymentNavHost(navController = navController, innerPadding = it)
             }
         }
     }

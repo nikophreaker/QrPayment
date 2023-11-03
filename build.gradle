@@ -38,6 +38,9 @@ buildscript {
         //Coil
         coil_version = "2.4.0"
 
+        //ycharts
+        ycharts_version = "2.1.0"
+
         //LiveData
         livedata_version = "1.5.4"
 

@@ -2,6 +2,7 @@ package com.nikoprayogaw.qrpayment.common.network.response.promo
 
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Formats(
     @SerializedName("large")
@@ -12,4 +13,4 @@ data class Formats(
     var small: Small?,
     @SerializedName("thumbnail")
     var thumbnail: Thumbnail?
-)
+): Serializable

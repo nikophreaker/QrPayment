@@ -3,6 +3,7 @@ package com.nikoprayogaw.qrpayment.di.usecase
 import com.nikoprayogaw.qrpayment.domain.repository.payment.PaymentRepository
 import com.nikoprayogaw.qrpayment.domain.repository.promo.PromoRepository
 import com.nikoprayogaw.qrpayment.domain.usecase.payment.AddPaymentUseCase
+import com.nikoprayogaw.qrpayment.domain.usecase.payment.GetPaymentByIdUseCase
 import com.nikoprayogaw.qrpayment.domain.usecase.payment.GetPaymentUseCase
 import com.nikoprayogaw.qrpayment.domain.usecase.promo.GetPromoUseCase
 import dagger.*
@@ -15,6 +16,10 @@ object PaymentUseCase {
     @Provides
     fun provideGetPaymentUseCase(paymentRepository: PaymentRepository): GetPaymentUseCase {
         return GetPaymentUseCase(paymentRepository)
+    }
+    @Provides
+    fun provideGetPaymentByIdUseCase(paymentRepository: PaymentRepository): GetPaymentByIdUseCase {
+        return GetPaymentByIdUseCase(paymentRepository)
     }
     @Provides
     fun provideAddPromoUseCase(paymentRepository: PaymentRepository): AddPaymentUseCase {

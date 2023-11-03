@@ -2,6 +2,7 @@ package com.nikoprayogaw.qrpayment.common.network.response.promo
 
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Thumbnail(
     @SerializedName("ext")
@@ -22,4 +23,4 @@ data class Thumbnail(
     var url: String?,
     @SerializedName("width")
     var width: Int?
-)
+): Serializable

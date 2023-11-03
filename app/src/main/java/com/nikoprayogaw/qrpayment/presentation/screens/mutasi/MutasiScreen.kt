@@ -1,5 +1,6 @@
 package com.nikoprayogaw.qrpayment.presentation.screens.mutasi
 
+import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -75,13 +76,15 @@ fun MutationScreen(
                                 modifier = Modifier
                                     .wrapContentWidth()
                                     .wrapContentHeight(),
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Center,
+                                color = Color.Black
                             )
                         }
                     }
                 }
 
-                is Resource.Error -> {}
+                is Resource.Error -> {
+                    Log.i("err :", state.errorMessage)}
             }
         }
     }
@@ -117,7 +120,7 @@ fun PaymentCard(payment: Payment, navigateToDetail: (Int) -> Unit) {
             .padding(10.dp)
             .fillMaxWidth()
             .clickable {
-                navigateToDetail.invoke(1)
+                navigateToDetail.invoke(payment.id)
             },
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(
